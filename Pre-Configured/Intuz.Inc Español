@@ -1,0 +1,31 @@
+# Guia detallada para la configuracion de Ostickets por AWS 
+
+
+Para abrir osTicket en una máquina virtual de AWS utilizando la versión preconfigurada de Intuz, sigue estos pasos:
+
+1. **Buscar y seleccionar la AMI (Amazon Machine Image) de osTicket**:
+   - Ve a AWS Marketplace y busca "osTicket pre-configurado por Intuz".
+   - Selecciona la AMI que incluye osTicket con phpMyAdmin preconfigurado. Asegúrate de verificar la versión más reciente disponible.
+
+2. **Lanzar la instancia EC2**:
+   - Desde la página de la AMI, haz clic en "Continuar para suscribirse" y sigue los pasos para lanzar una nueva instancia EC2.
+   - Elige el tipo de instancia que mejor se adapte a tus necesidades (se recomienda al menos una t2.micro para pruebas, pero para producción considera una instancia con mayores recursos).
+
+3. **Configurar la seguridad**:
+   - Asegúrate de configurar los grupos de seguridad para permitir el tráfico HTTP/HTTPS (puertos 80 y 443) y el acceso SSH (puerto 22) para la administración.
+   - Si usarás phpMyAdmin, abre también el puerto 3306 para el acceso a MySQL, aunque es recomendable limitar este acceso solo a direcciones IP de confianza.
+
+4. **Acceder a la instancia**:
+   - Una vez lanzada la instancia, utiliza la dirección IP pública o el nombre de dominio (si has asignado uno) para acceder a osTicket desde un navegador web.
+   - La URL será algo similar a `http://[tu_direccion_ip]/osticket`.
+
+5. **Configuración inicial de osTicket**:
+   - Completa la configuración inicial de osTicket siguiendo las instrucciones en pantalla. Esto incluirá la conexión a la base de datos MySQL que ya viene preconfigurada.
+
+6. **Administrar MySQL con phpMyAdmin**:
+   - Accede a phpMyAdmin para gestionar la base de datos si es necesario. La URL típica sería `http://[tu_direccion_ip]/phpmyadmin`.
+
+7. **Monitoreo y mantenimiento**:
+   - Intuz incluye scripts para la gestión de contraseñas, backups y actualizaciones. Asegúrate de revisar la documentación para aprovechar estas herramientas y mantener tu sistema actualizado y seguro.
+
+Con estos pasos, deberías tener osTicket en funcionamiento en tu máquina virtual de AWS. Este enfoque te ahorra tiempo en la instalación y configuración, permitiéndote centrarte en la personalización y uso del sistema.
