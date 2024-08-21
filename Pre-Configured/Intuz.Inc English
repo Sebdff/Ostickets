@@ -1,0 +1,31 @@
+# This guide follow the steps for pre-configured version of Ostickets by AWS
+
+
+To open osTicket in an AWS virtual machine using the preconfigured version of Intuz, follow these steps:
+
+1. **Search for and select the AMI (Amazon Machine Image) of osTicket**:
+   - Go to AWS Marketplace and search for “osTicket pre-configured by Intuz”.
+   - Select the AMI that includes osTicket with preconfigured phpMyAdmin. Be sure to check for the most recent version available.
+
+2. **Launch the EC2 instance**:
+   - From the AMI page, click “Continue to subscribe” and follow the steps to launch a new EC2 instance.
+   - Choose the instance type that best suits your needs (at least a t2.micro is recommended for testing, but for production consider an instance with more resources).
+
+3. **Configure security**:
+   - Be sure to configure the security groups to allow HTTP/HTTPS traffic (ports 80 and 443) and SSH access (port 22) for administration.
+   - If you will be using phpMyAdmin, also open port 3306 for MySQL access, although it is recommended to limit this access to trusted IP addresses only.
+
+4. **Access the instance:
+   - Once the instance is launched, use the public IP address or domain name (if you have assigned one) to access osTicket from a web browser.
+   - The URL will be something similar to `http://[your_ip_address]/osticket`.
+
+5. **initial osTicket configuration**:
+   - Complete the initial osTicket configuration by following the on-screen instructions. This will include the connection to the MySQL database which is already preconfigured.
+
+6. **Administer MySQL with phpMyAdmin**:
+   - Access phpMyAdmin to manage the database if necessary. The typical URL would be `http://[your_ip_address]/phpmyadmin`.
+
+7. **Monitoring and maintenance:
+   - Intuz includes scripts for password management, backups and updates. Be sure to review the documentation to take advantage of these tools and keep your system up to date and secure.
+
+With these steps, you should have osTicket up and running on your AWS virtual machine. This approach saves you time on installation and configuration, allowing you to focus on customizing and using the system.
