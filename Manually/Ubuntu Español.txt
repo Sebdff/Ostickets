@@ -57,9 +57,9 @@ Nota: ("Bash" es referido a la consola de comandos eso quiere decir que lo que e
 
 8) **Descargar y descomprimir osTicket**
    ```bash
-   wget https://github.com/osTicket/osTicket/releases/download/v1.17.2/osTicket-v1.17.2.zip
+   wget https://github.com/osTicket/osTicket/releases/download/v1.18.1/osTicket-v1.18.1.zip
    sudo mkdir /var/www/html/osticket
-   sudo unzip osTicket-v1.17.2.zip -d /var/www/html/osticket
+   sudo unzip osTicket-v1.18.1.zip -d /var/www/html/osticket
    ```
 
 9) **Asignar los permisos adecuados**
