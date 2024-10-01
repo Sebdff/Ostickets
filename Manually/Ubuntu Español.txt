@@ -92,7 +92,6 @@ sudo systemctl restart apache2
 
 12) Completar la instalación vía navegador
 
-Abre el navegador y dirígete a http://54.158.70.94/setup para completar la instalación guiada de osTicket.
 
 13) Finalizar la configuración
 
