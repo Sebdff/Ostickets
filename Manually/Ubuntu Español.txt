@@ -1,56 +1,68 @@
---
 
-Guía detallada de instalación en Ubuntu Server (MySQL y Apache)
 
 1) Actualizar los paquetes del servidor
+
+Primero, es necesario actualizar el sistema con los últimos paquetes disponibles:
 
 sudo apt update && sudo apt upgrade -y
 
 2) Instalar Apache y MySQL
 
+Luego, instala Apache y MySQL para proporcionar el servidor web y la base de datos:
+
 sudo apt install apache2 mysql-server -y
 
 3) Instalar PHP y las dependencias necesarias
 
+Agrega el repositorio de PHP de Ondrej para acceder a las últimas versiones de PHP compatibles:
+
 sudo apt install software-properties-common ca-certificates lsb-release apt-transport-https -y
 sudo add-apt-repository ppa:ondrej/php -y
 
-4) Instalar PHP 8.1 y las extensiones requeridas
+4) Instalar PHP 8.2 y las extensiones requeridas
 
-sudo apt install php8.1 libapache2-mod-php8.1 php8.1-common php8.1-fpm php8.1-cgi php8.1-bcmath php8.1-gd php8.1-imap php8.1-intl php8.1-mbstring php8.1-curl php8.1-mysql php8.1-xml php8.1-zip unzip -y
+Instala PHP 8.2 y las extensiones necesarias para que osTicket funcione correctamente:
+
+sudo apt install php8.2 libapache2-mod-php8.2 php8.2-common php8.2-fpm php8.2-cgi php8.2-bcmath php8.2-gd php8.2-imap php8.2-intl php8.2-mbstring php8.2-curl php8.2-mysql php8.2-xml php8.2-zip unzip -y
 
 5) Verificar la instalación de PHP
+
+Verifica la instalación correcta de PHP:
 
 php -v
 sudo systemctl restart apache2
 
 6) Configurar MySQL
 
+Accede a MySQL como el usuario root para configurar la base de datos de osTicket:
+
 sudo mysql -u root -p
 
-Introduce la contraseña de MySQL cuando se te pida y luego ejecuta los siguientes comandos:
+Introduce la contraseña de root de MySQL cuando se te solicite y luego ejecuta los siguientes comandos para crear la base de datos y un usuario:
 
 CREATE DATABASE osticketdb;
-CREATE USER 'admin'@'localhost' IDENTIFIED BY '54203719';
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'tu_contraseña_segura';
 GRANT ALL PRIVILEGES ON osticketdb.* TO 'admin'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
 
 7) Habilitar el acceso remoto a MySQL
 
-Edita el archivo de configuración:
+Si necesitas que MySQL permita conexiones remotas, edita el archivo de configuración:
 
 sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 
-Busca la línea bind-address y cámbiala a:
+Cambia la línea bind-address a lo siguiente:
 
 bind-address = 0.0.0.0
 
-Luego, reinicia MySQL para aplicar los cambios:
+Reinicia MySQL para aplicar los cambios:
 
 sudo systemctl restart mysql
 
 8) Descargar y descomprimir osTicket
+
+Descarga la última versión de osTicket y descomprímela en el directorio correspondiente:
 
 wget https://github.com/osTicket/osTicket/releases/download/v1.18.1/osTicket-v1.18.1.zip
 sudo mkdir /var/www/html/osticket
@@ -58,18 +70,24 @@ sudo unzip osTicket-v1.18.1.zip -d /var/www/html/osticket
 
 9) Asignar los permisos adecuados
 
+Asigna los permisos correctos al directorio de osTicket:
+
 sudo chown -R www-data:www-data /var/www/html/osticket
 sudo chmod -R 755 /var/www/html/osticket
 
 10) Configurar el archivo de configuración de osTicket
 
+Renombra el archivo de configuración de ejemplo:
+
 sudo mv /var/www/html/osticket/upload/include/ost-sampleconfig.php /var/www/html/osticket/upload/include/ost-config.php
 
 11) Crear un VirtualHost en Apache
 
+Crea un archivo de configuración de sitio para Apache:
+
 sudo nano /etc/apache2/sites-available/osticket.conf
 
-Añade la siguiente configuración:
+Añade el siguiente contenido, reemplazando your-domain.com con tu dominio o la IP del servidor:
 
 <VirtualHost *:80>
     ServerName your-domain.com
@@ -84,27 +102,50 @@ Añade la siguiente configuración:
     CustomLog ${APACHE_LOG_DIR}/osticket.access.log combined
 </VirtualHost>
 
-Habilita el nuevo sitio y el módulo rewrite:
+Habilita el sitio y el módulo rewrite de Apache:
 
 sudo a2ensite osticket.conf
 sudo a2enmod rewrite
 sudo systemctl restart apache2
 
-12) Completar la instalación vía navegador
+12) Instalar el plugin OAuth2 para autenticación moderna
+
+1. Descarga el plugin OAuth2 desde la página oficial de osTicket.
 
 
-13) Finalizar la configuración
+2. Descomprime el archivo y cópialo en el directorio de plugins:
 
-Después de la instalación, cambia los permisos de ost-config.php para mayor seguridad:
+sudo unzip oauth2.zip -d /var/www/html/osticket/include/plugins
+
+
+3. Sigue la guía de configuración de OAuth2 para completar la integración.
+
+
+
+13) Completar la instalación vía navegador
+
+1. Abre tu navegador y accede a *ip de la instancia* para iniciar la instalación de osTicket.
+
+
+2. Sigue las instrucciones en pantalla para configurar la base de datos y completar la instalación.
+
+
+
+14) Finalizar la configuración
+
+Por razones de seguridad, cambia los permisos del archivo ost-config.php:
 
 sudo chmod 644 /var/www/html/osticket/upload/include/ost-config.php
 
-14) Eliminar el directorio de instalación
+15) Eliminar el directorio de instalación
+
+Para mayor seguridad, elimina el directorio de instalación:
 
 sudo rm -rf /var/www/html/osticket/upload/setup/
 
+16) Actualizar plugins y paquetes de idioma
 
----
+1. Verifica y actualiza los paquetes de idioma según sea necesario.
 
-Con estos pasos, tendrás osTicket instalado y funcionando correctamente en tu servidor con Apache y MySQL.
 
+2. Asegúrate de que el plugin OAuth2 esté activado correctamente.
