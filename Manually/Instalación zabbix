@@ -1,0 +1,82 @@
+Para instalar Zabbix en tu servidor Ubuntu, una vez que ya tienes Bacula y osTicket configurados, sigue esta guía paso a paso:
+
+Paso 1: Preparar el Servidor
+
+1. Actualizar paquetes e instalar dependencias necesarias:
+
+sudo apt update && sudo apt upgrade -y
+sudo apt install wget curl gnupg2 -y
+
+
+2. Agregar el repositorio de Zabbix 6.0 LTS: Primero descarga el repositorio oficial de Zabbix para Ubuntu:
+
+wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4%2Bubuntu24.04_all.deb
+sudo dpkg -i zabbix-release_6.0-4+ubuntu24.04_all.deb
+sudo apt update
+
+
+
+Paso 2: Instalar Zabbix Server, Frontend y Agent
+
+1. Instalar el servidor Zabbix, el frontend web y el agente:
+
+sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-agent
+
+
+
+Paso 3: Configurar la Base de Datos MySQL
+
+1. Crear la base de datos y usuario para Zabbix: Inicia sesión en MySQL:
+
+sudo mysql -uroot -p
+
+Luego crea la base de datos y el usuario:
+
+CREATE DATABASE zabbix CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE USER 'zabbix'@'localhost' IDENTIFIED BY 'tu_contraseña';
+GRANT ALL PRIVILEGES ON zabbix.* TO 'zabbix'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+
+2. Importar el esquema inicial de la base de datos: Ejecuta este comando para importar los datos iniciales:
+
+zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix
+
+
+
+Paso 4: Configurar Zabbix Server
+
+1. Editar el archivo de configuración de Zabbix:
+
+sudo nano /etc/zabbix/zabbix_server.conf
+
+Busca las líneas DBName, DBUser y añade:
+
+DBPassword=tu_contraseña
+
+
+2. Reiniciar el servicio de Zabbix:
+
+sudo systemctl restart zabbix-server zabbix-agent apache2
+sudo systemctl enable zabbix-server zabbix-agent apache2
+
+
+
+Paso 5: Acceder a la Interfaz Web
+
+1. Abrir el frontend de Zabbix en un navegador: Ve a http://tu_direccion_ip/zabbix y sigue los pasos del asistente de instalación. Introduce la información de la base de datos que configuraste anteriormente y completa el proceso.
+
+
+2. Iniciar sesión: El nombre de usuario predeterminado es Admin y la contraseña es zabbix. Cambia la contraseña por seguridad al iniciar sesión.
+
+
+
+Paso 6: Añadir Hosts para Monitorización
+
+1. Agregar nuevos hosts: En el panel de Zabbix, dirígete a Configuration > Hosts para añadir nuevos dispositivos que deseas monitorear. Puedes agregar hosts mediante SNMP o instalar el agente de Zabbix en las máquinas remotas.
+
+
+
+Esta guía proporciona una instalación completa del servidor Zabbix para monitoreo de infraestructura. Es ideal para implementaciones de pequeño a mediano tamaño.
+
