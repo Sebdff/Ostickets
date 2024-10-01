@@ -1,0 +1,93 @@
+Para instalar Bacula, un software robusto para copias de seguridad, en Ubuntu Server después de haber configurado osTicket, sigue estos pasos basados en la última versión disponible:
+
+1. Preparar el sistema
+
+Primero, asegúrate de que tu servidor esté actualizado:
+
+sudo apt update && sudo apt upgrade -y
+
+2. Instalar Bacula
+
+Bacula está disponible en los repositorios oficiales de Ubuntu. Para instalar Bacula junto con MySQL como base de datos, ejecuta los siguientes comandos:
+
+sudo apt install bacula bacula-director-mysql bacula-sd bacula-fd
+
+Durante la instalación, se te pedirá que configures la base de datos. Elige "Sí" y sigue los pasos para configurarla con MySQL.
+
+3. Configurar Bacula
+
+Una vez instalado, debes configurar los tres componentes principales de Bacula:
+
+Director: Controla las tareas de respaldo y restauración.
+
+Storage Daemon (SD): Administra los dispositivos de almacenamiento.
+
+File Daemon (FD): Corre en los clientes para suministrar los archivos.
+
+
+Configura el Director editando el archivo:
+
+sudo nano /etc/bacula/bacula-dir.conf
+
+Aquí, deberás definir los conjuntos de archivos, las programaciones y los trabajos. Un ejemplo básico para hacer una copia de seguridad de la carpeta /home/ sería:
+
+FileSet {
+    Name = "BackupCompleto"
+    Include {
+        Options {
+            signature = MD5
+        }
+        File = /home/
+    }
+    Exclude {
+        File = /home/*/.cache
+    }
+}
+
+Luego, configura el Storage Daemon en:
+
+sudo nano /etc/bacula/bacula-sd.conf
+
+Aquí, asegúrate de que los dispositivos de almacenamiento y las rutas estén bien definidas.
+
+Finalmente, configura el File Daemon:
+
+sudo nano /etc/bacula/bacula-fd.conf
+
+Asegúrate de que el nombre del Director y las contraseñas coincidan.
+
+4. Iniciar los servicios de Bacula
+
+Una vez que todo esté configurado, inicia los servicios de Bacula:
+
+sudo systemctl start bacula-director
+sudo systemctl start bacula-sd
+sudo systemctl start bacula-fd
+
+Para que estos servicios se inicien automáticamente al arrancar, puedes habilitarlos:
+
+sudo systemctl enable bacula-director
+sudo systemctl enable bacula-sd
+sudo systemctl enable bacula-fd
+
+5. Ejecutar el primer respaldo
+
+Usa la consola de Bacula para ejecutar tu primera tarea de respaldo:
+
+sudo bconsole
+
+Luego escribe run y sigue las instrucciones para seleccionar y ejecutar el trabajo de respaldo.
+
+6. Restaurar desde una copia de seguridad
+
+Para restaurar datos, usa la consola de Bacula y el comando restore. Sigue los pasos en pantalla para seleccionar el respaldo y realizar la restauración.
+
+Requerimientos mínimos:
+
+Ubuntu Server 20.04 o superior.
+
+MySQL o PostgreSQL para gestionar las bases de datos de Bacula.
+
+Al menos 512 MB de RAM, aunque se recomienda más para entornos con grandes volúmenes de datos.
+
+Espacio de almacenamiento suficiente para las copias de seguridad que planeas hacer.
